@@ -1,0 +1,111 @@
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { userApi } from "../api/userApi";
+import type { ApiResponse } from "../interfaces/ApiResponse";
+import { toast } from "react-toastify";
+
+const SignIn: React.FC = () => {
+  //Các state 
+  const [username, setUsername] = useState(""); //lưu giá trị tên đăng nhập
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    const sub = userApi.login({ username, password }).subscribe({
+      next: (res: ApiResponse<string>) => {
+        const token = res?.data;
+        if(res.success) {navigate("/");
+          toast.success(res.message);
+          localStorage.setItem("username", res.data)
+        }
+        if (token) {
+          localStorage.setItem("accessToken", token);
+          navigate("/");
+        } 
+        setLoading(false);
+      },
+      error: (err: ApiResponse<string>) => {
+        setError(err?.message || "Network error");
+        setLoading(false);
+      },
+    });
+
+    return () => sub.unsubscribe();
+  };
+
+  return (
+    <div className="min-h-screen w-screen flex items-center justify-center bg-gradient-to-br from-green-100 via-emerald-100 to-green-200">
+      <div className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-md">
+        <h2 className="text-3xl font-bold text-green-600 mb-6 text-center">
+          Đăng nhập
+        </h2>
+
+        <form onSubmit={onSubmit} className="space-y-5">
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              Tên đăng nhập
+            </label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-400 focus:outline-none"
+              placeholder="Nhập tên đăng nhập"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              Mật khẩu
+            </label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-400 focus:outline-none"
+              placeholder="Nhập mật khẩu"
+              required
+            />
+          </div>
+
+          {error && (
+            <div className="text-red-600 bg-red-50 border border-red-300 rounded-lg px-3 py-2 text-sm">
+              {error}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full bg-gradient-to-br from-green-100 via-emerald-100 to-green-200 !hover:bg-green-700 text-gray-800 py-2.5 rounded-lg font-medium transition-all ${
+              loading
+                ? "bg-green-400 cursor-not-allowed"
+                : "bg-green-600 hover:bg-green-700"
+            }`}
+          >
+            {loading ? "Đăng nhập..." : "Đăng nhập"}
+          </button>
+        </form>
+
+        <p className="text-center text-sm text-gray-600 mt-6">
+          Chưa có tài khoản?{" "}
+          <span
+            onClick={() => navigate("/signup")}
+            className="text-green-600 font-medium hover:underline cursor-pointer"
+          >
+            Đăng kí
+          </span>
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export default SignIn;
