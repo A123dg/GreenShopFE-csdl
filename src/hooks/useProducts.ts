@@ -9,33 +9,43 @@ import {
   productKeys,
 } from "../queries/product.query";
 
+/* =======================
+   GET PRODUCTS HOOK
+==========================*/
 export const useProducts = () => {
   return useQuery<ProductResponse[], AxiosError>({
     queryKey: productKeys.list(),
     queryFn: getProductsQuery,
-    staleTime: 0, // luôn coi là stale để dễ refetch
-    gcTime: 0, // không giữ cache quá lâu
+    staleTime: 0,
+    gcTime: 0,
     refetchOnWindowFocus: true,
-    refetchOnMount: "always", // luôn gọi lại khi component mount
+    refetchOnMount: "always",
   });
 };
 
+/* =======================
+   CREATE PRODUCT HOOK
+==========================*/
 export const useCreateProduct = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<ApiResponse<ProductResponse>, AxiosError, CreateProduct>({
+  return useMutation<
+    ApiResponse<ProductResponse>,
+    AxiosError,
+    CreateProduct,
+    { previousProducts: ProductResponse[] | undefined }
+  >({
     mutationFn: createProductQuery,
 
     onMutate: async (newProduct) => {
       await queryClient.cancelQueries({ queryKey: productKeys.list() });
 
-      const previousProducts = queryClient.getQueryData<ProductResponse[]>(productKeys.list());
+      const previousProducts =
+        queryClient.getQueryData<ProductResponse[]>(productKeys.list());
 
       const optimisticProduct: ProductResponse = {
-        id: Date.now(), 
-        name: newProduct.name,
-        price: newProduct.price,
-        ...newProduct, //sao chép dữ liệu từ form
+        id: Date.now(),
+        ...newProduct,
       };
 
       queryClient.setQueryData<ProductResponse[]>(productKeys.list(), (old) =>
@@ -45,9 +55,12 @@ export const useCreateProduct = () => {
       return { previousProducts };
     },
 
-    onError: (err, newProduct, context) => {
+    onError: (_error, _newProduct, context) => {
       if (context?.previousProducts) {
-        queryClient.setQueryData(productKeys.list(), context.previousProducts);
+        queryClient.setQueryData(
+          productKeys.list(),
+          context.previousProducts
+        );
       }
     },
 
@@ -57,17 +70,25 @@ export const useCreateProduct = () => {
   });
 };
 
-
+/* =======================
+   DELETE PRODUCT HOOK
+==========================*/
 export const useDeleteProduct = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<ApiResponse<boolean>, AxiosError, number>({
+  return useMutation<
+    ApiResponse<boolean>,
+    AxiosError,
+    number,
+    { previousProducts: ProductResponse[] | undefined }
+  >({
     mutationFn: deleteProductQuery,
 
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: productKeys.list() });
 
-      const previousProducts = queryClient.getQueryData<ProductResponse[]>(productKeys.list());
+      const previousProducts =
+        queryClient.getQueryData<ProductResponse[]>(productKeys.list());
 
       queryClient.setQueryData<ProductResponse[]>(productKeys.list(), (old) =>
         old ? old.filter((p) => p.id !== id) : []
@@ -76,9 +97,12 @@ export const useDeleteProduct = () => {
       return { previousProducts };
     },
 
-    onError: (err, id, context) => {
+    onError: (_error, _id, context) => {
       if (context?.previousProducts) {
-        queryClient.setQueryData(productKeys.list(), context.previousProducts);
+        queryClient.setQueryData(
+          productKeys.list(),
+          context.previousProducts
+        );
       }
     },
 

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import { cartApi } from "../../api/cartApi";
-import type { CartResponse } from "../../models/cart";
 import { toast } from "react-toastify";
+import type { CartItemResponse } from "../../models/cart";
 
 interface CartDetailModalProps {
   isOpen: boolean;
@@ -15,40 +15,32 @@ const CartDetailModal: React.FC<CartDetailModalProps> = ({
   onClose,
   userId,
 }) => {
-  const [cartDetail, setCartDetail] = useState<CartResponse | null>(null);
+  const [cartDetail, setCartDetail] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (isOpen && userId) {
-      fetchCartDetail();
+      fetchCartDetail(userId);
     }
   }, [isOpen, userId]);
 
- const fetchCartDetail = async () => {
-  setLoading(true);
-  try {
-  const res = await cartApi.getCartByUserId(userId);
-
-  const wrapper = res.data;
-  const data = wrapper || null ;
-
-  if ( !data) {
-    setCartDetail(null);
-    return;
+ const fetchCartDetail = async(userId : number) => {
+  try{
+    setLoading(true);
+    const res = await cartApi.getCartByUserId(userId);
+    toast.success(res.data.message || "Lấy cart theo user thành công")
+    setCartDetail(res.data)
+    return res.data;
   }
-  
-  setCartDetail(data);
+  catch(err  : any)
+  {
+    toast.error(err.data.message || "Lấy cart thất bại")
+  }
+  finally{
+    setLoading(false);
+  }
 
-} catch (err: any) {
-  console.log("❌ ERROR:", err);
-  toast.error(err?.response?.data?.message || "Lỗi tải giỏ hàng");
-  setCartDetail(null);
-} finally {
-  setLoading(false);
-}
- };
-
-
+ }
   if (!isOpen) return null;
 
   return (
@@ -70,6 +62,7 @@ const CartDetailModal: React.FC<CartDetailModalProps> = ({
             <p className="mb-4 text-gray-700">
               <strong>Giỏ hàng ID:</strong> {cartDetail.id}
             </p>
+
             {cartDetail.items && cartDetail.items.length > 0 ? (
               <table className="w-full border border-gray-200 rounded-lg overflow-hidden">
                 <thead className="bg-green-100">
@@ -81,13 +74,13 @@ const CartDetailModal: React.FC<CartDetailModalProps> = ({
                   </tr>
                 </thead>
                 <tbody>
-                  {cartDetail.items.map((item) => (
+                  {cartDetail.items.map((item : CartItemResponse) => (
                     <tr key={item.productId} className="hover:bg-gray-50">
                       <td className="px-4 py-2 border-b">{item.productName}</td>
                       <td className="px-4 py-2 border-b">{item.price}đ</td>
                       <td className="px-4 py-2 border-b">{item.quantity}</td>
                       <td className="px-4 py-2 border-b">
-                        {(item.price * item.quantity)}đ
+                        {item.price * item.quantity}đ
                       </td>
                     </tr>
                   ))}
