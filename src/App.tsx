@@ -8,23 +8,29 @@ import Dashboard from "./pages/Dashboard";
 import User from "./pages/Users";
 import { ToastContainer } from "react-toastify";
 import ProductsPage from "./pages/ProductPage";
+import CartPage from "./pages/carts/CartPage";
+import VoucherPage from "./pages/vouchers/VoucherPage";
 
 const LayoutWithHeaderSidebar: React.FC = () => {
     const [isOpen, setIsOpen] = useState(true);
 
   return (
-<div className="flex flex-col min-h-screen w-full">
+<div className="min-h-screen min-w-screen">
   <Header />
-  <div className="flex w-full mt-16 relative">
+  <div className="w-full flex mt-16 relative">
     <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
    <main
-  className={`flex-grow transition-all duration-300 p-6 ${
-    isOpen ? "ml-58 w-[40%]" : "ml-20"
+  className={`w-full  transition-all duration-300 p-6 ${
+    isOpen ? "ml-[256px]" : "ml-[80px]"
   }`}
 >
+  <Outlet />
+</main>
 
-      <Outlet />
-    </main>
+
+
+
+      
   </div>
 </div>
   );
@@ -51,6 +57,8 @@ const App: React.FC = () => {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/dashboard/users" element={<User />} /> 
           <Route path="/dashboard/products" element={<ProductsPage />}></Route>
+          <Route path="dashboard/carts" element={<CartPage/>} />
+          <Route path="/dashboard/vouchers" element={<VoucherPage />}></Route>
           <Route path="/" element={<Dashboard />} />
           
         </Route>

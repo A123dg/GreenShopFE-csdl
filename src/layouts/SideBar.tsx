@@ -8,6 +8,7 @@ import {
   Bars3Icon,
 } from "@heroicons/react/24/outline";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
+import { TicketIcon } from "@heroicons/react/24/outline";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -20,10 +21,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
 
   const menuItems = [
     { name: "Tổng quan", icon: <HomeIcon className="h-5 w-5" />, path: "/dashboard" },
-    { name: "Sản phẩm", icon: <ShoppingBagIcon className="h-5 w-5" />, path: "/dashboard/products" },
-    { name: "Giỏ hàng", icon: <ShoppingCartIcon className="h-5 w-5" />, path: "/dashboard/products" },
     { name: "Người dùng", icon: <UsersIcon className="h-5 w-5" />, path: "/dashboard/users" },
+    { name: "Sản phẩm", icon: <ShoppingBagIcon className="h-5 w-5" />, path: "/dashboard/products" },
+    { name: "Giỏ hàng", icon: <ShoppingCartIcon className="h-5 w-5" />, path: "/dashboard/carts" },
+    { name: "Voucher", icon: <TicketIcon className="h-5 w-5" />, path: "/dashboard/vouchers" },
+
     { name: "Cài đặt", icon: <Cog6ToothIcon className="h-5 w-5" />, path: "/dashboard/settings" },
+    
   ];
 
   return (

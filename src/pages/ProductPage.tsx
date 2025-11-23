@@ -67,62 +67,66 @@ const products = data || [];
       {products.length === 0 ? (
         <p className="text-gray-500 text-center py-6">Không có sản phẩm nào.</p>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden">
-            <thead className="bg-green-100 text-left">
-              <tr>
-                <th className="px-12 py-3 text-gray-700 font-semibold border-b">ID</th>
-                <th className="px-12 py-3 text-gray-700 font-semibold border-b">Tên sản phẩm</th>
-                <th className="px-12 py-3 text-gray-700 font-semibold border-b">Giá</th>
-                <th className="px-10 py-3 text-gray-700 font-semibold border-b">Số lượng</th>
-                <th className="px-12 py-3 text-gray-700 font-semibold border-b">Mô tả</th>
-                <th className="px-10 py-3 text-gray-700 font-semibold border-b">Đánh giá</th>
-                <th className="px-10 py-3 text-gray-700 font-semibold border-b text-center">Thao tác</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((product) => (
-                <tr
-                  key={product.id}
-                  className="hover:bg-green-50 transition-all duration-200 cursor-pointer"
-                >
-                  <td className="px-6 py-3 border-b">{product.id}</td>
-                  <td className="px-6 py-3 border-b">{product.name}</td>
-                  <td className="px-6 py-3 border-b">{product.price}</td>
-                  <td className="px-6 py-3 border-b">{product.quantity}</td>
-                  <td className="px-6 py-3 border-b">{product.description}</td>
-                  <td className="px-6 py-3 border-b">
-                    <span
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${
-                        product.rate > 2.5
-                          ? "bg-green-200 text-green-800"
-                          : "bg-emerald-100 text-emerald-700"
-                      }`}
-                    >
-                      {product.rate}
-                    </span>
-                  </td>
-                  <td className="px-6 py-3 border-b text-center">
-                    <div className="flex justify-center space-x-4">
-                      <button
-                        onClick={() => handleEdit(product)}
-                        className="text-gray-600 hover:text-gray-800"
-                      >
-                        <PencilSquareIcon className="w-6 h-6" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(product.id)}
-                        className="text-red-400 hover:text-red-500"
-                      >
-                        <TrashIcon className="w-6 h-6" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <div className="w-full overflow-x-auto">
+  <table className="w-full table-auto bg-white  rounded-lg">
+    <thead className="bg-green-100 text-left">
+      <tr>
+        <th className="px-6 py-3 text-gray-700 font-semibold  whitespace-nowrap min-w-[80px]">ID</th>
+        <th className="px-6 py-3 text-gray-700 font-semibold  whitespace-nowrap min-w-[180px]">Tên sản phẩm</th>
+        <th className="px-6 py-3 text-gray-700 font-semibold  whitespace-nowrap min-w-[100px]">Giá</th>
+        <th className="px-6 py-3 text-gray-700 font-semibold  whitespace-nowrap min-w-[90px]">Số lượng</th>
+        <th className="px-6 py-3 text-gray-700 font-semibold  min-w-[220px]">Mô tả</th>
+        <th className="px-6 py-3 text-gray-700 font-semibold  whitespace-nowrap min-w-[100px]">Đánh giá</th>
+        <th className="px-6 py-3 text-gray-700 font-semibold  text-center whitespace-nowrap min-w-[120px]">Thao tác</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {products.map((product) => (
+        <tr key={product.id} className="hover:bg-green-50 transition-all duration-200 cursor-pointer">
+
+          <td className="px-6 py-3 border-b whitespace-nowrap">{product.id}</td>
+          <td className="px-6 py-3 border-b whitespace-nowrap">{product.name}</td>
+          <td className="px-6 py-3 border-b whitespace-nowrap">{product.price}</td>
+          <td className="px-6 py-3 border-b whitespace-nowrap">{product.quantity}</td>
+
+          <td className="px-6 py-3 border-b">{product.description}</td>
+
+          <td className="px-6 py-3 border-b">
+            <span
+              className={`px-3 py-1 rounded-full text-sm font-medium ${
+                product.rate > 2.5
+                  ? "bg-green-200 text-green-800"
+                  : "bg-emerald-100 text-emerald-700"
+              }`}
+            >
+              {product.rate}
+            </span>
+          </td>
+
+          <td className="px-6 py-3 border-b text-center">
+            <div className="flex justify-center space-x-4">
+              <button
+                onClick={() => handleEdit(product)}
+                className="text-gray-600 hover:text-gray-800"
+              >
+                <PencilSquareIcon className="w-6 h-6" />
+              </button>
+              <button
+                onClick={() => handleDelete(product.id)}
+                className="text-red-400 hover:text-red-500"
+              >
+                <TrashIcon className="w-6 h-6" />
+              </button>
+            </div>
+          </td>
+
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
       )}
       {isCreateOpen && (
         <CreateProductComponent isOpen={isCreateOpen}

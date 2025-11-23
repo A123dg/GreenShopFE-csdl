@@ -9,13 +9,11 @@ const SignIn: React.FC = () => {
   const [username, setUsername] = useState(""); //lưu giá trị tên đăng nhập
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
 
     const sub = userApi.login({ username, password }).subscribe({
       next: (res: ApiResponse<string>) => {
@@ -31,7 +29,7 @@ const SignIn: React.FC = () => {
         setLoading(false);
       },
       error: (err: ApiResponse<string>) => {
-        setError(err?.message || "Network error");
+        toast.error(err?.message || "Đăng nhập thất bại")
         setLoading(false);
       },
     });
@@ -75,11 +73,7 @@ const SignIn: React.FC = () => {
             />
           </div>
 
-          {error && (
-            <div className="text-red-600 bg-red-50 border border-red-300 rounded-lg px-3 py-2 text-sm">
-              {error}
-            </div>
-          )}
+          
 
           <button
             type="submit"
