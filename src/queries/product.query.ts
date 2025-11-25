@@ -1,6 +1,6 @@
 import { productApi } from "../api/productApi";
 import type { ApiResponse } from "../interfaces/ApiResponse";
-import type { ProductResponse, CreateProduct } from "../models/products";
+import type { ProductResponse, CreateProduct, UpdateProduct } from "../models/products";
 
 export const productKeys = {
   all: ["products"] as const,
@@ -25,7 +25,13 @@ export const createProductQuery = async (form: CreateProduct) => {
   return res.data as ApiResponse<ProductResponse>;
 };
 
-//  Xóa sản phẩm
+// Cập nhật sản phẩm
+export const updateProductQuery = async (id: number, form: UpdateProduct) => {
+  const res = await productApi.updateProduct(id, form);
+  return res.data as ApiResponse<ProductResponse>;
+};
+
+// Xóa sản phẩm
 export const deleteProductQuery = async (id: number) => {
   const res = await productApi.deleteProduct(id);
   return res.data as ApiResponse<boolean>;

@@ -1,4 +1,5 @@
 import type { ApiResponse } from "../interfaces/ApiResponse";
+import type { VoucherQuery } from "../interfaces/query";
 import type { VoucherResposne, VoucherRequest } from "../models/voucher";
 import axiosClient from "./axiosClient";
 
@@ -11,6 +12,9 @@ export const voucherApi = {
 
     deleteVoucher : (id : number) => axiosClient.delete<ApiResponse<boolean>>(`${BASE_URL}/${id}`),
 
-    getAllVoucher: () => axiosClient.get<ApiResponse<VoucherResposne[]>>(`${BASE_URL}/vouchers`)
+getAllVoucher: (query: VoucherQuery) =>
+  axiosClient.get<ApiResponse<VoucherResposne[]>>(`${BASE_URL}/vouchers`, {
+    params: query,
+  })
 
 };

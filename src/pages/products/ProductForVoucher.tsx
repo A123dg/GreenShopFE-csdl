@@ -1,28 +1,16 @@
 import React, { useState } from "react";
-import { PencilSquareIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/solid";
-import { useDeleteProduct, useProducts } from "../hooks/useProducts";
+import {  PlusIcon } from "@heroicons/react/24/solid";
 import { toast } from "react-toastify";
-import type { ProductResponse } from "../models/products";
-import CreateProductComponent from "../components/products/CreateProductComponent";
+import type { ProductResponse } from "../../models/products";
+import CreateProductComponent from "../../components/products/CreateProductComponent";
+import { useProducts } from "../../hooks/useProducts";
 
-const ProductsPage: React.FC = () => {
+const ProductUserPage: React.FC = () => {
   const { data, isLoading, isError, error } = useProducts();
-  const deleteMutation = useDeleteProduct();
     const [isCreateOpen, setIsCreateOpen] = useState(false);
 
-  const handleDelete = (id: number) => {
-    deleteMutation.mutate(id, {
-      onSuccess: (res) => {
-        if (res.success) toast.success("Xóa thành công");
-        else toast.error(res.message);
-      },
-      onError: (err) => toast.error(err.message),
-    });
-  };
-
-  const handleAddProduct = () => {
-    setIsCreateOpen(true);
-  };
+  
+ 
 
   const handleEdit = (product: ProductResponse) => {
     toast.info(`Sửa sản phẩm: ${product.name}`);
@@ -54,13 +42,7 @@ const products = data || [];
             placeholder="Tìm kiếm sản phẩm..."
             className="border border-gray-300 rounded-lg px-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-green-500"
           />
-          <button
-            onClick={handleAddProduct}
-            className="flex items-center gap-2 px-4 py-2 !bg-green-300 text-gray-800 rounded-lg hover:bg-green-700 transition"
-          >
-            <PlusIcon className="w-5 h-5" />
-            Thêm
-          </button>
+          
         </div>
       </div>
 
@@ -109,15 +91,10 @@ const products = data || [];
               <button
                 onClick={() => handleEdit(product)}
                 className="text-gray-600 hover:text-gray-800"
-              >
-                <PencilSquareIcon className="w-6 h-6" />
+              > 
+                <PlusIcon className="w-6 h-6" /> Thêm vào giỏ hàng
               </button>
-              <button
-                onClick={() => handleDelete(product.id)}
-                className="text-red-400 hover:text-red-500"
-              >
-                <TrashIcon className="w-6 h-6" />
-              </button>
+              
             </div>
           </td>
 
@@ -138,4 +115,4 @@ const products = data || [];
   );
 };
 
-export default ProductsPage;
+export default ProductUserPage;

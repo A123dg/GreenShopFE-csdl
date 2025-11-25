@@ -17,3 +17,12 @@ export interface ProductResponse{
     description: string
     status:number
 }
+export interface UpdateProduct {
+  name?: string;
+  price?: number;
+  quantity?: number;
+  description?: string;
+  rate?: number;
+  image?: string;
+  status?: number;
+}

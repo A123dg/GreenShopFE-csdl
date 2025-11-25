@@ -1,6 +1,6 @@
 import axiosClient from "./axiosClient";
 import type { ApiResponse } from "../interfaces/ApiResponse";
-import type { CreateProduct, ProductResponse } from "../models/products";
+import type { CreateProduct, ProductResponse, UpdateProduct } from "../models/products";
 
 const BASE_URL = `/products`;
 
@@ -9,7 +9,7 @@ export const productApi = {
 
   getAllProcduct:() => axiosClient.get<ApiResponse<ProductResponse[]>>(BASE_URL),
 
-  updateProduct: (id: number, data: CreateProduct) => {
+  updateProduct: (id: number, data: UpdateProduct) => {
   return axiosClient.put(`${BASE_URL}/${id}`, data, {
     headers: {
       id: id.toString(), 

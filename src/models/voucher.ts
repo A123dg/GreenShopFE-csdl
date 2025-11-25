@@ -1,5 +1,5 @@
 export interface VoucherResposne{
-    expireAt: any;
+    expireAt: string;
     id : number;
     code: string;
     discount: number;

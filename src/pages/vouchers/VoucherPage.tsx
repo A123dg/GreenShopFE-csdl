@@ -1,20 +1,50 @@
-import { useState } from "react";
-import { Table } from "antd";
+import { useState, useMemo, useEffect } from "react";
+import { Table, Input, Button, Select } from "antd";
 import { useVouchers } from "../../hooks/useVoucher";
 import ModalFormCreateVoucher from "../../components/voucher/CreateVoucherModal";
-import { TrashIcon } from "@heroicons/react/24/solid";
-import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import ModalFormUpdateVoucher from "../../components/voucher/UpdateVoucherModal";
+import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/solid";
+import debounce from "lodash.debounce";
 import type { VoucherResposne } from "../../models/voucher";
 
+const { Option } = Select;
+
 const VoucherPage = () => {
-  const { vouchers, loading, createVoucher, deleteVoucher, updateVoucher } =
-    useVouchers();
+  const {
+    vouchers,
+    loading,
+    createVoucher,
+    updateVoucher,
+    deleteVoucher,
+    query,
+    setQuery,
+    fetchVoucher,
+  } = useVouchers();
 
   const [openCreateModal, setOpenCreateModal] = useState(false);
-
   const [openUpdate, setOpenUpdate] = useState(false);
-const [selectedVoucher, setSelectedVoucher] = useState<VoucherResposne | null>(null);
+  const [selectedVoucher, setSelectedVoucher] = useState<VoucherResposne | null>(null);
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
+
+  const debouncedFetch = useMemo(
+    () =>
+      debounce((search: string) => {
+        fetchVoucher({ ...query, search });
+      }, 500),
+    [fetchVoucher, query]
+  );
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setQuery({ ...query, search: value });
+    debouncedFetch(value);
+  };
+
+  useEffect(() => {
+    return () => {
+      debouncedFetch.cancel();
+    };
+  }, [debouncedFetch]);
 
   const columns = [
     { title: "ID", dataIndex: "id" },
@@ -23,12 +53,10 @@ const [selectedVoucher, setSelectedVoucher] = useState<VoucherResposne | null>(n
     { title: "Số lượng", dataIndex: "quantity", width: 200 },
     { title: "Đã dùng", dataIndex: "usedQuantity" },
     { title: "Trạng thái", dataIndex: "status" },
-
     {
       title: "Thao tác",
-      render: (record: any) => (
+      render: (record: VoucherResposne) => (
         <div className="flex space-x-2 items-center">
-          
           <button
             className="flex items-center gap-2 bg-gray-200 border border-red-500 text-red-500 px-3 py-1 rounded transition"
             onClick={() => deleteVoucher(record.id)}
@@ -37,12 +65,11 @@ const [selectedVoucher, setSelectedVoucher] = useState<VoucherResposne | null>(n
             <span>Xóa</span>
           </button>
 
-          {/* CẬP NHẬT */}
           <button
             className="flex items-center gap-2 bg-gray-200 border border-green-500 text-green-500 px-3 py-1 rounded transition"
             onClick={() => {
-              setSelectedVoucher(record); 
-              setOpenUpdate(true); 
+              setSelectedVoucher(record);
+              setOpenUpdate(true);
             }}
           >
             <PencilSquareIcon className="w-5 h-5" />
@@ -56,17 +83,54 @@ const [selectedVoucher, setSelectedVoucher] = useState<VoucherResposne | null>(n
   return (
     <div className="space-y-3">
       <div className="flex justify-between mb-4">
-        <h2 className="text-2xl font-bold text-green-700 mb-4">Danh sách voucher</h2>
-
-        <button className="!bg-green-300 px-4 py-2 rounded" onClick={() => setOpenCreateModal(true)}>
+        <h2 className="text-2xl font-bold  text-green-700 mb-4">Danh sách voucher</h2>
+        <Button className="!bg-green-300 !text-gray-900" type="primary" onClick={() => setOpenCreateModal(true)}>
           Tạo Voucher
-        </button>
+        </Button>
       </div>
-       <input
-           type="text"
-            placeholder="Tìm kiếm voucher..."
-            className="border border-gray-300 rounded-lg px-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
+
+      <div className="flex !space-x-2 mb-4 items-end">
+        <Input
+          placeholder="Tìm kiếm voucher..."
+          value={query.search}
+          onChange={handleSearchChange}
+          className="w-64"
+        />
+
+        <Button onClick={() => setShowAdvancedSearch((prev) => !prev)}>
+          Tìm kiếm nâng cao
+        </Button>
+      </div>
+
+      {showAdvancedSearch && (
+        <div className="flex !space-x-2 mb-4 items-end">
+          <Select
+            placeholder="Chọn trạng thái"
+            value={query.status}
+            onChange={(value) => setQuery({ ...query, status: value })}
+            style={{ width: 150 }}
+            allowClear
+          >
+            <Option value={1}>Đang hoạt động</Option>
+            <Option value={0}>Ngưng hoạt động</Option>
+          </Select>
+
+          <Input
+            placeholder="Giảm tối thiểu"
+            type="number"
+            value={query.discount}
+            onChange={(e) =>
+              setQuery({ ...query, discount: Number(e.target.value) || undefined })
+            }
+            style={{ width: 150 }}
           />
+
+          <Button type="primary" onClick={() => fetchVoucher(query)}>
+            Áp dụng
+          </Button>
+        </div>
+      )}
+
       <Table
         columns={columns}
         dataSource={vouchers}
@@ -84,16 +148,17 @@ const [selectedVoucher, setSelectedVoucher] = useState<VoucherResposne | null>(n
         }}
       />
 
+      {/* Modal Create */}
       <ModalFormCreateVoucher
         open={openCreateModal}
         onClose={() => setOpenCreateModal(false)}
         onSubmit={(data) => {
           createVoucher(data);
           setOpenCreateModal(false);
-
         }}
       />
 
+      {/* Modal Update */}
       <ModalFormUpdateVoucher
         open={openUpdate}
         onClose={() => setOpenUpdate(false)}
@@ -101,7 +166,6 @@ const [selectedVoucher, setSelectedVoucher] = useState<VoucherResposne | null>(n
         onSubmit={(id, data) => {
           updateVoucher(id, data);
           setOpenUpdate(false);
-
         }}
       />
     </div>
