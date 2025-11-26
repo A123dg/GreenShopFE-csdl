@@ -8,7 +8,9 @@ import {
   Bars3Icon,
   ShoppingCartIcon,
   TicketIcon,
+  NewspaperIcon,
 } from "@heroicons/react/24/outline";
+import { PaperClipIcon } from "@heroicons/react/24/outline";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -28,15 +30,21 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
     { name: "Tổng quan", icon: <HomeIcon className="h-5 w-5" />, path: "/dashboard" },
     { name: "Người dùng", icon: <UsersIcon className="h-5 w-5" />, path: "/dashboard/users" },
     { name: "Sản phẩm", icon: <ShoppingBagIcon className="h-5 w-5" />, path: "/dashboard/products" },
+   
     { name: "Giỏ hàng", icon: <ShoppingCartIcon className="h-5 w-5" />, path: "/dashboard/carts" },
+    {name:"Đơn hàng", icon:<NewspaperIcon className="h-5 w-5"/>, path:"/dashboard/orders"},
     { name: "Voucher", icon: <TicketIcon className="h-5 w-5" />, path: "/dashboard/vouchers" },
+    {name:"Tin tức", icon: <PaperClipIcon className="h-5 w-5"></PaperClipIcon>, path: "/dashboard/news"},
     { name: "Cài đặt", icon: <Cog6ToothIcon className="h-5 w-5" />, path: "/dashboard/settings" },
   ];
 
   const userMenu = [
-    { name: "Sản phẩm", icon: <ShoppingBagIcon className="h-5 w-5" />, path: "/products" },
-    { name: "Giỏ hàng", icon: <ShoppingCartIcon className="h-5 w-5" />, path: "/cart" },
-    { name: "Voucher", icon: <TicketIcon className="h-5 w-5" />, path: "/voucher" },
+        {name:"Tin tức", icon: <PaperClipIcon className="h-5 w-5"></PaperClipIcon>, path: "/user/news"},
+
+    { name: "Sản phẩm", icon: <ShoppingBagIcon className="h-5 w-5" />, path: "/user/products" },
+    { name: "Giỏ hàng", icon: <ShoppingCartIcon className="h-5 w-5" />, path: "/user/cart" },
+   
+   { name: "Voucher", icon: <TicketIcon className="h-5 w-5" />, path: "/user/voucher" },
   ];
 
   const menuItems = role === "admin" ? adminMenu : userMenu;

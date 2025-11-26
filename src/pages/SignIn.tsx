@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { userApi } from "../api/userApi";
 import type { ApiResponse } from "../interfaces/ApiResponse";
+import type { UserResponse } from "../models/user";
 import { toast } from "react-toastify";
 
 const SignIn: React.FC = () => {
@@ -16,20 +17,19 @@ const SignIn: React.FC = () => {
     setLoading(true);
 
     const sub = userApi.login({ username, password }).subscribe({
-      next: (res: ApiResponse<string>) => {
-        const token = res?.data;
-        if(res.success) {navigate("/");
+      next: (res: ApiResponse<UserResponse>) => {
+        if (res.success && res.data) {
+          // Token được lưu bởi interceptor khi login
           toast.success(res.message);
-          localStorage.setItem("username", res.data)
-        }
-        if (token) {
-          localStorage.setItem("accessToken", token);
           navigate("/");
-        } 
+        } else {
+          toast.error(res.message || "Đăng nhập thất bại");
+        }
         setLoading(false);
       },
-      error: (err: ApiResponse<string>) => {
-        toast.error(err?.message || "Đăng nhập thất bại")
+      error: (err: any) => {
+        const errorMessage = err?.response?.data?.message || err?.message || "Đăng nhập thất bại";
+        toast.error(errorMessage);
         setLoading(false);
       },
     });
@@ -73,15 +73,13 @@ const SignIn: React.FC = () => {
             />
           </div>
 
-          
-
           <button
             type="submit"
             disabled={loading}
-            className={`w-full bg-gradient-to-br from-green-100 via-emerald-100 to-green-200 !hover:bg-green-700 text-gray-800 py-2.5 rounded-lg font-medium transition-all ${
+            className={`w-full py-2.5 rounded-lg font-medium transition-all ${
               loading
-                ? "bg-green-400 cursor-not-allowed"
-                : "bg-green-600 hover:bg-green-700"
+                ? "bg-green-400 cursor-not-allowed text-gray-800"
+                : "bg-green-600 hover:bg-green-700 text-white"
             }`}
           >
             {loading ? "Đăng nhập..." : "Đăng nhập"}

@@ -3,3 +3,8 @@ export interface VoucherQuery{
     status?: number;
     discount?: number;
 }
+export interface NewsQuery{
+    title? :string,
+    author?: string,
+    source?:string,
+}
