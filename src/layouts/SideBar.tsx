@@ -34,6 +34,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
     { name: "Giỏ hàng", icon: <ShoppingCartIcon className="h-5 w-5" />, path: "/dashboard/carts" },
     {name:"Đơn hàng", icon:<NewspaperIcon className="h-5 w-5"/>, path:"/dashboard/orders"},
     { name: "Voucher", icon: <TicketIcon className="h-5 w-5" />, path: "/dashboard/vouchers" },
+    {name:"Danh mục", icon:<NewspaperIcon className="h-5 w-5"/>, path:"/dashboard/categories"},
     {name:"Tin tức", icon: <PaperClipIcon className="h-5 w-5"></PaperClipIcon>, path: "/dashboard/news"},
     { name: "Cài đặt", icon: <Cog6ToothIcon className="h-5 w-5" />, path: "/dashboard/settings" },
   ];

@@ -1,9 +1,36 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useDashboard } from "../hooks/useDashboard";
 
+// Heroicons
+import {
+  BanknotesIcon,
+  UserGroupIcon,
+  ShoppingBagIcon,
+  NewspaperIcon,
+  TicketIcon,
+  ChartBarIcon,
+} from "@heroicons/react/24/outline";
+
+// Recharts
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+} from "recharts";
+
 const Dashboard: React.FC = () => {
-  const {  dashboard, fetchDashboard } = useDashboard();
-  
+  const { dashboard, fetchDashboard } = useDashboard();
+
+  React.useEffect(() => {
+    fetchDashboard();
+  }, [fetchDashboard]);
+
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -11,197 +38,189 @@ const Dashboard: React.FC = () => {
     }).format(amount);
   };
 
+  if (!dashboard) return <div className="p-6">Đang tải...</div>;
+
   return (
-    <div className="w-full p-6 bg-white rounded-xl shadow-md space-y-4">
-      <div className="mb-6 flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-800">Dashboard</h1>
-        <button
-          onClick={fetchDashboard}
-          className="!bg-green-400 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors"
-        >
-          Làm mới
-        </button>
+    <div className="w-full p-6 bg-gray-100 min-h-screen space-y-6">
+      <h1 className="text-2xl font-bold">Dashboard</h1>
+
+      {/* STAT CARDS */}
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <StatCard
+          title="Tổng doanh thu"
+          value={formatCurrency(dashboard.totalRevenue)}
+          icon={<BanknotesIcon className="w-10 h-10 text-green-600" />}
+        />
+        <StatCard
+          title="Tổng người dùng"
+          value={dashboard.totalUsers.toLocaleString()}
+          icon={<UserGroupIcon className="w-10 h-10 text-blue-600" />}
+        />
+        <StatCard
+          title="Tổng đơn hàng"
+          value={dashboard.totalOrders.toLocaleString()}
+          icon={<ShoppingBagIcon className="w-10 h-10 text-purple-600" />}
+        />
+        <StatCard
+          title="Tổng tin tức"
+          value={dashboard.totalNews.toLocaleString()}
+          icon={<NewspaperIcon className="w-10 h-10 text-yellow-600" />}
+        />
+        <StatCard
+          title="Tổng sản phẩm"
+          value={dashboard.totalProducts.toLocaleString()}
+          icon={<ChartBarIcon className="w-10 h-10 text-indigo-600" />}
+        />
+        <StatCard
+          title="Tổng voucher"
+          value={dashboard.totalVouchers.toLocaleString()}
+          icon={<TicketIcon className="w-10 h-10 text-red-600" />}
+        />
       </div>
 
-      {dashboard && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Total Users */}
-          <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 text-sm font-medium">
-                  Tổng người dùng
-                </p>
-                <p className="text-3xl font-bold text-gray-800 mt-2">
-                  {dashboard.totalUsers.toLocaleString()}
-                </p>
-              </div>
-              <div className="bg-blue-100 p-3 rounded-full">
-                <svg
-                  className="w-8 h-8 text-blue-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          {/* Total Products */}
-          <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 text-sm font-medium">
-                  Tổng sản phẩm
-                </p>
-                <p className="text-3xl font-bold text-gray-800 mt-2">
-                  {dashboard.totalProducts.toLocaleString()}
-                </p>
-              </div>
-              <div className="bg-green-100 p-3 rounded-full">
-                <svg
-                  className="w-8 h-8 text-green-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          {/* Total Orders */}
-          <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 text-sm font-medium">
-                  Tổng đơn hàng
-                </p>
-                <p className="text-3xl font-bold text-gray-800 mt-2">
-                  {dashboard.totalOrders.toLocaleString()}
-                </p>
-              </div>
-              <div className="bg-purple-100 p-3 rounded-full">
-                <svg
-                  className="w-8 h-8 text-purple-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          {/* Total News */}
-          <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 text-sm font-medium">
-                  Tổng tin tức
-                </p>
-                <p className="text-3xl font-bold text-gray-800 mt-2">
-                  {dashboard.totalNews.toLocaleString()}
-                </p>
-              </div>
-              <div className="bg-yellow-100 p-3 rounded-full">
-                <svg
-                  className="w-8 h-8 text-yellow-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          {/* Total Vouchers */}
-          <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 text-sm font-medium">
-                  Tổng voucher
-                </p>
-                <p className="text-3xl font-bold text-gray-800 mt-2">
-                  {dashboard.totalVouchers.toLocaleString()}
-                </p>
-              </div>
-              <div className="bg-red-100 p-3 rounded-full">
-                <svg
-                  className="w-8 h-8 text-red-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          {/* Total Revenue - Full Width */}
-          <div className="bg-gradient-to-r from-green-400 to-blue-500 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow md:col-span-2 lg:col-span-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-white text-sm font-medium">
-                  Tổng doanh thu
-                </p>
-                <p className="text-4xl font-bold text-white mt-2">
-                  {formatCurrency(dashboard.totalRevenue)}
-                </p>
-              </div>
-              <div className="bg-white bg-opacity-30 p-3 rounded-full">
-                <svg
-                  className="w-10 h-10 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
+      {/* Revenue Chart */}
+      <div className="bg-white rounded-xl shadow p-6">
+        <div className="flex items-center gap-2 mb-4">
+          <ChartBarIcon className="w-6 h-6 text-gray-600" />
+          <h2 className="text-lg font-bold text-gray-700">Doanh thu 12 tháng</h2>
         </div>
-      )}
+        {dashboard.monthlyStats && dashboard.monthlyStats.length > 0 ? (
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={dashboard.monthlyStats}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" tickFormatter={(m) => `Th ${m}`} />
+              <YAxis />
+              <Tooltip formatter={(v) => formatCurrency(v as number)} />
+              <Line type="monotone" dataKey="revenue" stroke="#4ade80" strokeWidth={3} />
+            </LineChart>
+          </ResponsiveContainer>
+        ) : (
+          <p className="text-gray-500 italic">Không có dữ liệu</p>
+        )}
+      </div>
+
+      {/* Highest & Lowest Month */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <MonthCard
+          title="Tháng cao nhất"
+          monthData={dashboard.highestMonth}
+          formatCurrency={formatCurrency}
+          bgColor="green-50"
+          textColor="green-700"
+        />
+        <MonthCard
+          title="Tháng thấp nhất"
+          monthData={dashboard.lowestMonth}
+          formatCurrency={formatCurrency}
+          bgColor="red-50"
+          textColor="red-700"
+        />
+      </div>
+
+      {/* Average Revenue */}
+      <div className="p-6 bg-blue-50 rounded-xl shadow">
+        <h3 className="text-lg font-bold text-blue-700 mb-2">Doanh thu trung bình 12 tháng</h3>
+        <p className="text-2xl font-bold text-gray-800">
+          {formatCurrency(dashboard.avgRevenue12Months)}
+        </p>
+      </div>
+
+      {/* Top Users */}
+      <div className="bg-white rounded-xl shadow p-6">
+        <h2 className="text-lg font-bold mb-4 text-gray-700">Top khách hàng</h2>
+        {dashboard.topUsers && dashboard.topUsers.length > 0 ? (
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="bg-gray-100 text-gray-700">
+                <th className="p-3 text-left">Tên</th>
+                <th className="p-3 text-right">Tổng chi tiêu</th>
+              </tr>
+            </thead>
+            <tbody>
+              {dashboard.topUsers.map((u) => (
+                <tr key={u.userId} className="border-b">
+                  <td className="p-3">{u.fullName}</td>
+                  <td className="p-3 text-right">{formatCurrency(u.totalSpent)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p className="text-gray-500 italic">Không có dữ liệu</p>
+        )}
+      </div>
+
+      {/* Top Products */}
+      <div className="bg-white rounded-xl shadow p-6">
+        <h2 className="text-lg font-bold mb-4 text-gray-700">Sản phẩm bán chạy nhất</h2>
+        {dashboard.topProducts && dashboard.topProducts.length > 0 ? (
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={dashboard.topProducts}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="productName" />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="totalSold" fill="#60a5fa" />
+            </BarChart>
+          </ResponsiveContainer>
+        ) : (
+          <p className="text-gray-500 italic">Không có dữ liệu</p>
+        )}
+      </div>
     </div>
   );
 };
 
 export default Dashboard;
+
+/* --- COMPONENTS --- */
+
+interface StatCardProps {
+  title: string;
+  value: string | number;
+  icon: React.ReactNode;
+}
+const StatCard: React.FC<StatCardProps> = ({ title, value, icon }) => (
+  <div className="bg-white shadow rounded-xl p-4 flex items-center gap-3">
+    {icon}
+    <div>
+      <p className="text-gray-500">{title}</p>
+      <p className="text-xl font-bold text-gray-800">{value}</p>
+    </div>
+  </div>
+);
+
+interface MonthData {
+  month: number;
+  revenue: number;
+  totalProducts: number;
+}
+
+interface MonthCardProps {
+  title: string;
+  monthData: MonthData | null;
+  formatCurrency: (amount: number) => string;
+  bgColor: string;
+  textColor: string;
+}
+
+const MonthCard: React.FC<MonthCardProps> = ({
+  title,
+  monthData,
+  formatCurrency,
+  bgColor,
+  textColor,
+}) => (
+  <div className={`p-6 rounded-xl shadow ${bgColor}`}>
+    <h3 className={`text-lg font-bold mb-2 ${textColor}`}>{title}</h3>
+    {monthData ? (
+      <>
+        <p>Tháng: <strong>{monthData.month}</strong></p>
+        <p>Doanh thu: <strong>{formatCurrency(monthData.revenue)}</strong></p>
+        <p>Sản phẩm bán: <strong>{monthData.totalProducts}</strong></p>
+      </>
+    ) : (
+      <p className="text-gray-500 italic">Không có dữ liệu</p>
+    )}
+  </div>
+);

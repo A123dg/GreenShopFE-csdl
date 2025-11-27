@@ -16,6 +16,7 @@ import UserNewsPage from "./pages/news/UserNewsPage";
 import UserVoucherPage from "./pages/vouchers/VoucherForUser";
 import { UserCartPage } from "./pages/carts/UserCart";
 import OrderPage from "./pages/orders/OrderPage";
+import CategoryPage from "./pages/CategoryPage";
 
 const LayoutWithHeaderSidebar: React.FC = () => {
     const [isOpen, setIsOpen] = useState(true);
@@ -70,6 +71,9 @@ const App: React.FC = () => {
           <Route path="/dashboard/orders" element={<OrderPage/>}></Route>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/user/cart" element={<UserCartPage/>} ></Route> 
+          <Route path="/user/categories" element={<CategoryPage/>} ></Route> 
+                    <Route path="/dashboard/categories" element={<CategoryPage/>} ></Route> 
+
           <Route path="/" element={<Dashboard />} />
 
           <Route path="/user/news" element={<UserNewsPage/>} ></Route> 

@@ -6,8 +6,13 @@ export interface CategoryResponse{
     status: number,
     productResponses: ProductResponse[],
 }
-export interface CategoryResponse{
+export interface CreateCategoryRequest{
     name: string,
     status: number,
     productId: number[],
+}
+export interface CategoryRequest {
+  name: string;
+  description?: string;
+  status?: number;
 }

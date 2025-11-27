@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from "react";
-import { PlusIcon } from "@heroicons/react/24/solid";
 import { toast } from "react-toastify";
 import type { ProductResponse } from "../../models/products";
 import CreateProductComponent from "../../components/products/CreateProductComponent";
