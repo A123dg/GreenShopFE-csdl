@@ -4,7 +4,7 @@ import { useNews } from "../../hooks/useNews";
 import { EyeIcon } from "@heroicons/react/24/solid";
 import debounce from "lodash.debounce";
 import type { NewsResponse } from "../../models/news";
-import ModalViewNewsDetail from "../../components/news/ModalNewsDetail";
+import ModalViewNewsDetails from "../../components/news/ModalNewsDetail";
 
 const UserNewsPage = () => {
   const {
@@ -145,14 +145,11 @@ const UserNewsPage = () => {
           },
         }}
       />
-      <ModalViewNewsDetail
-        open={openViewDetail}
-        onClose={() => {
-          setOpenViewDetail(false);
-          setSelectedNews(null);
-        }}
-        newsId={selectedNews?.id || null}
-      />
+       <ModalViewNewsDetails
+  open={openViewDetail}
+  onClose={() => setOpenViewDetail(false)}
+  newsDetails={selectedNews?.newsDetails}
+/>
     </div>
   );
 };

@@ -40,7 +40,7 @@ const CreateProductComponent: React.FC<CreateAdminComponentProps> = ({
     createProductMutation.mutate(form, {
       onSuccess: (res) => {
         if (res) {
-          toast.success("  insert into product (description, image, name, price, quantity, rate, status) values (?, ?, ?, ?, ?, ?, ?)");
+          toast.success("Tạo sản phầm thành công");
           onClose();
         } else {
           toast.error("Tạo sản phẩm thất bại!");

@@ -59,57 +59,76 @@ const ProductsPage: React.FC = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-green-700 mb-4">Danh sách sản phẩm</h2>
 
-        <div className="flex space-x-4">
-          <input
-            type="text"
-            placeholder="Tìm kiếm sản phẩm..."
-            className="border border-gray-300 rounded-lg px-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-green-500"
-            onChange={handleSearchChange}
-          />
-          <button
-            onClick={handleAddProduct}
-            className="flex items-center gap-2 px-4 py-2 !bg-green-300 text-gray-800 rounded-lg hover:bg-green-700 transition"
-          >
-            <PlusIcon className="w-5 h-5" />
-            Thêm
-          </button>
-        </div>
+        <button
+          onClick={handleAddProduct}
+          className="flex items-center gap-2 px-4 py-2 !bg-green-300 text-gray-800 rounded-lg hover:bg-green-700 transition"
+        >
+          <PlusIcon className="w-5 h-5" />
+          Thêm
+        </button>
       </div>
 
-      {/* Nút mở tìm kiếm nâng cao */}
-      <button
-        onClick={() => setShowAdvancedSearch((prev) => !prev)}
-        className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
-      >
-        {showAdvancedSearch ? "Đóng tìm kiếm nâng cao" : "Tìm kiếm nâng cao"}
-      </button>
+      <div className="flex gap-4 items-center">
+        <input
+          type="text"
+          placeholder="Tìm kiếm sản phẩm..."
+          className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+          onChange={handleSearchChange}
+        />
+        <button
+          onClick={() => setShowAdvancedSearch((prev) => !prev)}
+          className="px-4 py-2 bg-gray-100 rounded-lg flex items-center gap-2 border hover:bg-gray-200 transition whitespace-nowrap"
+        >
+          {showAdvancedSearch ? "Đóng tìm kiếm nâng cao" : "Tìm kiếm nâng cao"}
+        </button>
+      </div>
 
       {showAdvancedSearch && (
-        <div className="flex space-x-4 mt-2 mb-4 items-end">
-          <input
-            type="number"
-            placeholder="Giá"
-            className="border border-gray-300 rounded px-3 py-1 w-32"
-            onChange={(e) =>
-              setQuery((prev) => ({ ...prev, price: e.target.value ? Number(e.target.value) : undefined }))
-            }
-          />
-          <select
-            className="border !border-gray-300 !rounded px-3 py-1"
-            onChange={(e) =>
-              setQuery((prev) => ({ ...prev, staus: e.target.value ? Number(e.target.value) : undefined }))
-            }
-          >
-            <option value="">Trạng thái</option>
-            <option value="1">Hoạt động</option>
-            <option value="0">Ngưng hoạt động</option>
-          </select>
-          <button
-            className="px-4 py-2 !bg-green-300 rounded hover:!bg-green-400"
-            onClick={() => refetch()}
-          >
-            Áp dụng
-          </button>
+        <div className="mt-4 p-4 bg-gray-50 border rounded-xl shadow-sm">
+          <h3 className="text-lg font-semibold text-gray-700 mb-3">Tìm kiếm nâng cao</h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="flex flex-col">
+              <label className="text-sm text-gray-600 mb-1">Giá sản phẩm</label>
+              <input
+                type="number"
+                placeholder="Nhập giá..."
+                className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-400 focus:outline-none"
+                onChange={(e) =>
+                  setQuery((prev) => ({
+                    ...prev,
+                    price: e.target.value ? Number(e.target.value) : undefined,
+                  }))
+                }
+              />
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-sm text-gray-600 mb-1">Trạng thái</label>
+              <select
+                className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-400"
+                onChange={(e) =>
+                  setQuery((prev) => ({
+                    ...prev,
+                    staus: e.target.value ? Number(e.target.value) : undefined,
+                  }))
+                }
+              >
+                <option value="">Tất cả</option>
+                <option value="1">Hoạt động</option>
+                <option value="0">Ngưng hoạt động</option>
+              </select>
+            </div>
+
+            <div className="flex items-end">
+              <button
+                className="w-full px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition font-medium"
+                onClick={() => refetch()}
+              >
+                Áp dụng
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

@@ -6,7 +6,7 @@ import debounce from "lodash.debounce";
 import type { NewsResponse } from "../../models/news";
 import ModalFormCreateNews from "../../components/news/ModalCreateNews";
 import ModalFormUpdateNews from "../../components/news/ModalUpdateNews";
-import ModalViewNewsDetail from "../../components/news/ModalNewsDetail";
+import ModalViewNewsDetails from "../../components/news/ModalNewsDetail";
 
 const NewsPage = () => {
   const {
@@ -202,14 +202,11 @@ const NewsPage = () => {
       />
 
       {/* Modal View Detail */}
-      <ModalViewNewsDetail
-        open={openViewDetail}
-        onClose={() => {
-          setOpenViewDetail(false);
-          setSelectedNews(null);
-        }}
-        newsId={selectedNews?.id || null}
-      />
+      <ModalViewNewsDetails
+  open={openViewDetail}
+  onClose={() => setOpenViewDetail(false)}
+  newsDetails={selectedNews?.newsDetails}
+/>
     </div>
   );
 };

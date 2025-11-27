@@ -16,9 +16,7 @@ import {
 import type { ProductQuery } from "../interfaces/query";
 import { productApi } from "../api/productApi";
 
-/* =======================
-   GET PRODUCTS HOOK
-===========================*/
+
 export const useProducts = () => {
   return useQuery<ProductResponse[], AxiosError>({
     queryKey: productKeys.list(),

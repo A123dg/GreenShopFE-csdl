@@ -8,7 +8,7 @@ export const orderApi = {
     updateOrder: (id:number,data: OrderRequest) => axiosClient.put<ApiResponse<OrderResponse>>(`${BASE_URL}/${id}`,data),
     getOrder:() => axiosClient.get<ApiResponse<OrderResponse[]>>(BASE_URL),
     getOrderById:(id: number) => axiosClient.get<ApiResponse<OrderResponse>>(`${BASE_URL}/${id}`)
-
+    
     
 
 }

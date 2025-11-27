@@ -19,8 +19,6 @@ const ModalFormUpdateNews = ({ open, onClose, onSubmit, news }: Props) => {
 
   useEffect(() => {
     if (open && news) {
-      console.log("News data:", news);
-      console.log("News details:", news.newsDetails);
       
       form.setFieldsValue({
         title: news.title,
