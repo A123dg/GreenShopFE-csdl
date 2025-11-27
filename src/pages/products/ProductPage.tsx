@@ -1,18 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { PencilSquareIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/solid";
-import { useDeleteProduct, useProducts } from "../../hooks/useProducts";
+import { useDeleteProduct, useProductFilter } from "../../hooks/useProducts";
 import { toast } from "react-toastify";
 import type { ProductResponse } from "../../models/products";
 import CreateProductComponent from "../../components/products/CreateProductComponent";
 import EditProductComponent from "../../components/products/UpdateProductComponent";
+import debounce from "lodash.debounce";
+import type { ProductQuery } from "../../interfaces/query";
 
 const ProductsPage: React.FC = () => {
-  const { data, isLoading, isError, error } = useProducts();
+  const [query, setQuery] = useState<ProductQuery>({});
+  const { data, isLoading, refetch } = useProductFilter(query);
   const deleteMutation = useDeleteProduct();
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<ProductResponse | null>(null);
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
+
+  const debouncedFetch = useMemo(
+    () =>
+      debounce((name: string) => {
+        setQuery((prev) => ({ ...prev, name: name || undefined }));
+      }, 500),
+    []
+  );
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    debouncedFetch(value);
+  };
 
   const handleDelete = (id: number) => {
     deleteMutation.mutate(id, {
@@ -24,26 +41,16 @@ const ProductsPage: React.FC = () => {
     });
   };
 
-  const handleAddProduct = () => {
-    setIsCreateOpen(true);
-  };
-
+  const handleAddProduct = () => setIsCreateOpen(true);
   const handleEdit = (product: ProductResponse) => {
     setSelectedProduct(product);
     setIsEditOpen(true);
   };
 
-  if (isLoading) {
-    return <p className="text-center text-gray-500 mt-6">Đang tải sản phẩm...</p>;
-  }
-
-  if (isError) {
-    return (
-      <div className="text-center text-red-600 bg-red-50 border border-red-200 rounded-md p-4 mt-6">
-        Lỗi: {error?.message}
-      </div>
-    );
-  }
+  // Refetch khi query thay đổi
+  useEffect(() => {
+    refetch();
+  }, [query, refetch]);
 
   const products = data || [];
 
@@ -57,6 +64,7 @@ const ProductsPage: React.FC = () => {
             type="text"
             placeholder="Tìm kiếm sản phẩm..."
             className="border border-gray-300 rounded-lg px-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-green-500"
+            onChange={handleSearchChange}
           />
           <button
             onClick={handleAddProduct}
@@ -68,8 +76,47 @@ const ProductsPage: React.FC = () => {
         </div>
       </div>
 
+      {/* Nút mở tìm kiếm nâng cao */}
+      <button
+        onClick={() => setShowAdvancedSearch((prev) => !prev)}
+        className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+      >
+        {showAdvancedSearch ? "Đóng tìm kiếm nâng cao" : "Tìm kiếm nâng cao"}
+      </button>
+
+      {showAdvancedSearch && (
+        <div className="flex space-x-4 mt-2 mb-4 items-end">
+          <input
+            type="number"
+            placeholder="Giá"
+            className="border border-gray-300 rounded px-3 py-1 w-32"
+            onChange={(e) =>
+              setQuery((prev) => ({ ...prev, price: e.target.value ? Number(e.target.value) : undefined }))
+            }
+          />
+          <select
+            className="border !border-gray-300 !rounded px-3 py-1"
+            onChange={(e) =>
+              setQuery((prev) => ({ ...prev, staus: e.target.value ? Number(e.target.value) : undefined }))
+            }
+          >
+            <option value="">Trạng thái</option>
+            <option value="1">Hoạt động</option>
+            <option value="0">Ngưng hoạt động</option>
+          </select>
+          <button
+            className="px-4 py-2 !bg-green-300 rounded hover:!bg-green-400"
+            onClick={() => refetch()}
+          >
+            Áp dụng
+          </button>
+        </div>
+      )}
+
       {/* Table */}
-      {products.length === 0 ? (
+      {isLoading ? (
+        <p className="text-center text-gray-500 mt-6">Đang tải sản phẩm...</p>
+      ) : products.length === 0 ? (
         <p className="text-gray-500 text-center py-6">Không có sản phẩm nào.</p>
       ) : (
         <div className="w-full overflow-x-auto">
@@ -89,13 +136,11 @@ const ProductsPage: React.FC = () => {
             <tbody>
               {products.map((product) => (
                 <tr key={product.id} className="hover:bg-green-50 transition cursor-pointer">
-
                   <td className="px-6 py-3 border-b">{product.id}</td>
                   <td className="px-6 py-3 border-b">{product.name}</td>
                   <td className="px-6 py-3 border-b">{product.price}</td>
                   <td className="px-6 py-3 border-b">{product.quantity}</td>
                   <td className="px-6 py-3 border-b">{product.description}</td>
-
                   <td className="px-6 py-3 border-b">
                     <span
                       className={`px-3 py-1 rounded-full text-sm font-medium ${
@@ -107,7 +152,6 @@ const ProductsPage: React.FC = () => {
                       {product.rate}
                     </span>
                   </td>
-
                   <td className="px-6 py-3 border-b text-center">
                     <div className="flex justify-center space-x-4">
                       <button
@@ -125,7 +169,6 @@ const ProductsPage: React.FC = () => {
                       </button>
                     </div>
                   </td>
-
                 </tr>
               ))}
             </tbody>
@@ -134,10 +177,7 @@ const ProductsPage: React.FC = () => {
       )}
 
       {isCreateOpen && (
-        <CreateProductComponent
-          isOpen={isCreateOpen}
-          onClose={() => setIsCreateOpen(false)}
-        />
+        <CreateProductComponent isOpen={isCreateOpen} onClose={() => setIsCreateOpen(false)} />
       )}
 
       {isEditOpen && selectedProduct && (

@@ -18,12 +18,12 @@ const SignIn: React.FC = () => {
 
     const sub = userApi.login({ username, password }).subscribe({
       next: (res: ApiResponse<UserResponse>) => {
-        if (res.success && res.data) {
+        if (res.success) {
           // Token được lưu bởi interceptor khi login
           toast.success(res.message);
           navigate("/");
         } else {
-          toast.error(res.message || "Đăng nhập thất bại");
+          toast.success(res.message || "Đăng nhập thất bại");
         }
         setLoading(false);
       },
@@ -78,8 +78,8 @@ const SignIn: React.FC = () => {
             disabled={loading}
             className={`w-full py-2.5 rounded-lg font-medium transition-all ${
               loading
-                ? "bg-green-400 cursor-not-allowed text-gray-800"
-                : "bg-green-600 hover:bg-green-700 text-white"
+                ? "!bg-green-300 cursor-not-allowed text-gray-800"
+                : "!bg-green-400 hover:bg-green-700 text-black"
             }`}
           >
             {loading ? "Đăng nhập..." : "Đăng nhập"}

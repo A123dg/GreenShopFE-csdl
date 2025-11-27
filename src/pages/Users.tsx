@@ -24,6 +24,7 @@ const Users: React.FC = () => {
       next: (res: ApiResponse<UserResponse[]>) => {
         let userList: UserResponse[] = [];
         if (Array.isArray(res)) {
+          toast.success()
           userList = res;
         } else if (res?.data && Array.isArray(res.data)) {
           userList = res.data;

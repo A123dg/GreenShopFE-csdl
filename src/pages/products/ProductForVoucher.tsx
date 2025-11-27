@@ -57,8 +57,10 @@ const products = data || [];
         <th className="px-6 py-3 text-gray-700 font-semibold  whitespace-nowrap min-w-[180px]">Tên sản phẩm</th>
         <th className="px-6 py-3 text-gray-700 font-semibold  whitespace-nowrap min-w-[100px]">Giá</th>
         <th className="px-6 py-3 text-gray-700 font-semibold  whitespace-nowrap min-w-[90px]">Số lượng</th>
-        <th className="px-6 py-3 text-gray-700 font-semibold  min-w-[220px]">Mô tả</th>
+        <th className="px-6 py-3 text-gray-700 font-semibold  min-w-[200px]">Mô tả</th>
         <th className="px-6 py-3 text-gray-700 font-semibold  whitespace-nowrap min-w-[100px]">Đánh giá</th>
+        <th className="px-6 py-3 text-gray-700 font-semibold  min-w-[50px]">Trạng thái</th>
+
         <th className="px-6 py-3 text-gray-700 font-semibold  text-center whitespace-nowrap min-w-[120px]">Thao tác</th>
       </tr>
     </thead>
@@ -85,6 +87,7 @@ const products = data || [];
               {product.rate}
             </span>
           </td>
+          <td className="px-6 py-3 border-b">{product.status}</td>
 
           <td className="px-6 py-3 border-b text-center">
             <div className="flex justify-center space-x-4">

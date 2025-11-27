@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import type { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import type { ApiResponse } from "../interfaces/ApiResponse";
 import type {
   ProductResponse,
@@ -13,6 +13,8 @@ import {
   updateProductQuery,
   productKeys,
 } from "../queries/product.query";
+import type { ProductQuery } from "../interfaces/query";
+import { productApi } from "../api/productApi";
 
 /* =======================
    GET PRODUCTS HOOK
@@ -28,9 +30,16 @@ export const useProducts = () => {
   });
 };
 
-/* =======================
-   CREATE PRODUCT HOOK
-===========================*/
+export function useProductFilter(query :  ProductQuery) {
+  return useQuery({
+    queryKey: ["products", query],
+    queryFn: async () => {
+      const res = await productApi.getProductWithFilter(query);
+      return res.data;
+    },
+  });
+}
+
 export const useCreateProduct = () => {
   const queryClient = useQueryClient();
 
@@ -75,9 +84,7 @@ export const useCreateProduct = () => {
   });
 };
 
-/* =======================
-   UPDATE PRODUCT HOOK
-===========================*/
+
 export const useUpdateProduct = () => {
   const queryClient = useQueryClient();
 

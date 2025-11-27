@@ -8,3 +8,9 @@ export interface NewsQuery{
     author?: string,
     source?:string,
 }
+export interface ProductQuery{
+    name?: string,
+    status?:number,
+    price?:number
+
+}

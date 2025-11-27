@@ -122,7 +122,7 @@ const SignUp: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-500 text-green-600 py-2 rounded-lg hover:bg-blue-600 transition disabled:opacity-60"
+            className="w-full !bg-green-500 text-black py-2 rounded-lg hover:bg-blue-600 transition disabled:opacity-60"
           >
             {loading ? "Đang đăng ký..." : "Đăng ký"}
           </button>
@@ -130,7 +130,7 @@ const SignUp: React.FC = () => {
 
         <p className="text-center text-sm text-gray-600 mt-4">
           Đã có tài khoản?{" "}
-          <a href="/signin" className="!text-green-600 hover:underline">
+          <a href="/signin" className="!text-green-600  hover:underline">
             Đăng nhập
           </a>
         </p>

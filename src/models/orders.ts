@@ -16,7 +16,7 @@ export interface OrderDetailsResponse{
     price: number,
     status: number,
 }
-export interface OrderRequset {
+export interface OrderRequest {
     userId: number,
     note: string,
     orderDetails: OrderDetailRequest
